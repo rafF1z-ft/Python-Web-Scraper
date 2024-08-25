@@ -2,6 +2,13 @@ import re
 import threading
 import requests
 from bs4 import BeautifulSoup
+import argparse
+
+
+
+parser = argparse.ArgumentParser(description='Scraper de telefones de anúncios.')
+parser.add_argument('-t', '--threads', type=int, default=5, help='Número de threads (padrão: 5)')
+args = parser.parse_args()
 
 DOMINIO = "https://django-anuncios.solyd.com.br"
 URL_AUTO = f"{DOMINIO}/automoveis/"
@@ -78,7 +85,7 @@ if __name__ == "__main__":
         soup_busca = parsing(resposta_busca)
         if soup_busca:
             LINKS = encontrar_links(soup_busca)
-            threads = [threading.Thread(target=descobrir_numeros) for _ in range(5)]
+            threads = [threading.Thread(target=descobrir_numeros) for _ in range(args.threads)]
             for t in threads:
                 t.start()
             for t in threads:
